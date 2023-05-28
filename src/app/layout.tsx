@@ -1,5 +1,8 @@
+import { Copyright } from 'lucide-react'
 import './globals.css'
 import { Inter } from 'next/font/google'
+import Link from 'next/link'
+import { cookies } from 'next/headers'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -13,9 +16,32 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const isAuthenticated = cookies().has('token')
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className + ` bg-zinc-800 relative`}>
+
+        {isAuthenticated &&
+          <header className='fixed w-full z-50 bg-zinc-700 h-16 flex justify-between items-center text-green-200 px-4'>
+            <p>
+              a
+            </p>
+            <p>
+              a
+            </p>
+          </header>
+        }
+        {children}
+        <footer className='bg-green-900 h-20 flex justify-around items-center text-green-200'>
+          <div className='flex gap-1 items-center'>
+            <Copyright className='h-4 text-green-300' /> Created by <Link className='underline hover:text-green-400' href='https://github.com/nerdstarcode' target='_blank'>Sthiven Melo</Link>
+          </div>
+          <div>
+            Version 0.0.1
+          </div>
+        </footer>
+      </body>
+
     </html>
   )
 }
