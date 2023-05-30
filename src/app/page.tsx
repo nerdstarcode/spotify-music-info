@@ -1,5 +1,5 @@
-import LoginAnchorButton from './components/LoginAnchorButton'
-import LoginAnimation from './components/LoginAnimation'
+import LoginAnchorButton from '@atoms/LoginAnchorButton'
+import LoginAnimation from '@atoms/LoginAnimation'
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-around p-24">

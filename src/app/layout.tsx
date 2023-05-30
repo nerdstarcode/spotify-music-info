@@ -3,6 +3,8 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
+import LogoutButton from '@atoms/LogoutButton'
+import UserInfo from '@molecules/UserInfo'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,12 +25,8 @@ export default function RootLayout({
 
         {isAuthenticated &&
           <header className='fixed w-full z-50 bg-zinc-700 h-16 flex justify-between items-center text-green-200 px-4'>
-            <p>
-              a
-            </p>
-            <p>
-              a
-            </p>
+            <UserInfo/>
+            <LogoutButton/>
           </header>
         }
         {children}

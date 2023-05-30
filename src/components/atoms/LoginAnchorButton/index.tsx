@@ -1,16 +1,23 @@
 'use client'
+import Link from 'next/link'
 import queryString from 'query-string'
+import { useState } from 'react'
 export default function LoginAnchorButton() {
+  const [loging, setLoging] = useState(false)
+  function setStateLoging(){
+    setLoging(!loging)
+  }
   return (
-    <a href={`https://accounts.spotify.com/authorize?${queryString.stringify({
-      response_type: 'code',
-      client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
-      scope: process.env.NEXT_PUBLIC_SCOPE,
-      redirect_uri: 'http://localhost:3000/api/auth/callback',
-      state: 'loging'
-    })}
+    <Link onClick={setStateLoging} href={`
+      https://accounts.spotify.com/authorize?${queryString.stringify({
+        response_type: 'code',
+        client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
+        scope: process.env.NEXT_PUBLIC_SCOPE,
+        redirect_uri: 'http://localhost:3000/api/auth/callback',
+        state: 'loging'
+      })}
       `}
-      className='
+      className={`
         flex
         w-fit
         h-fit
@@ -27,7 +34,7 @@ export default function LoginAnchorButton() {
         hover:scale-105
         hover:bg-green-400
         hover:text-green-200
-
+        duration-700
         relative
         before:w-4
         before:h-4
@@ -44,9 +51,10 @@ export default function LoginAnchorButton() {
         before:hover:bg-center
         before:hover:object-
         before:hover:bg-no-repeat 
-      '
+        ${loging && 'opacity-0 scale-0'}
+      `}
     >
       Login on Spotify
-    </a>
+    </Link>
   )
 }
