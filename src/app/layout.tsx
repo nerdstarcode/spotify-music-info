@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import LogoutButton from '@atoms/LogoutButton'
 import UserInfo from '@molecules/UserInfo'
+import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,6 +39,7 @@ export default function RootLayout({
             Version 0.0.1
           </div>
         </footer>
+        <Toaster/>
       </body>
 
     </html>

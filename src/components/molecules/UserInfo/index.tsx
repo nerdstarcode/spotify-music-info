@@ -3,7 +3,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 export default function UserInfo() {
   if (typeof (window) !== undefined) {
-    console.log(getUser())
     const user = getUser()
     return (
       <Link href={'/authenticated'} className='flex gap-3 items-center'>

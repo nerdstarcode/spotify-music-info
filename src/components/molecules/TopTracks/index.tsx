@@ -1,63 +1,61 @@
 'use client'
-import { api } from '@/lib/api'
 import { getUser } from '@/lib/client'
 import { useEffect, useState } from 'react'
-import { TopTracksReponseDTO, TopTracksReponseSchema, TrackDTO } from './interaces.dto';
+import { TopTracksReponseDTO, TrackDTO } from './interaces.dto';
 import Image from 'next/image'
-export default function TopTracks() {
-
-  async function getTopTracks(user: any): Promise<TopTracksReponseDTO> {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: 'https://api.spotify.com/v1/me/top/tracks',
-      headers: { 'Authorization': 'Bearer ' + user.auth }
-    };
-    const topTracksResponse = await api.request(config)
-      .catch((error) => {
-        console.log(error);
-      });
-    console.log(topTracksResponse?.data)
-    const response = TopTracksReponseSchema.parse(topTracksResponse?.data)
-    return response
+import { Plus, Sparkles } from 'lucide-react';
+import { addToQueue, getTopTracks, recomendations } from '@/lib/spotify';
+import toast, { Toaster } from 'react-hot-toast';
+const playAudio = async (event: any) => {
+  const regex = /(\D+)?(\d+)(\D+)?/;
+  const match = event.target.id.match(regex);
+  const indexSound = match ? match[2] : null;
+  const imageElement = await document.getElementById(`sound-image-${indexSound}`)
+  const audioElement = await document.getElementById(`sound-${indexSound}`) as HTMLAudioElement | null;
+  if (audioElement) {
+    audioElement.volume = 0.1
+    audioElement.play();
+    imageElement?.classList.add('animate-spin-slow')
+    setTimeout(() => { imageElement?.classList.remove('animate-spin-slow') }, (audioElement.duration - audioElement.currentTime + 0.5) * 1000)
   }
+};
+const stopMusic = async (event: any) => {
+  const regex = /(\D+)?(\d+)(\D+)?/;
+  const match = event.target.id.match(regex);
+  const indexSound = match ? match[2] : null;
+  const imageElement = await document.getElementById(`sound-image-${indexSound}`)
+  const audioElement = await document.getElementById(`sound-${indexSound}`) as HTMLAudioElement | null;
+  if (audioElement) {
+    audioElement.pause();
+    imageElement?.classList.remove('animate-spin-slow')
+  }
+}
+export default function TopTracks() {
   if (typeof (window) !== undefined) {
-    console.log(getUser())
     const user = getUser()
     const [topTracks, setTopTracks] = useState<any[]>()
     useEffect(() => {
-      getTopTracks(user).then((response: TopTracksReponseDTO) => {
-        setTopTracks(response.items)
-      });
+      getTopTracks(user)
+        .then((response: TopTracksReponseDTO) => {
+          setTopTracks(response.items)
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }, [])
-    const playAudio = async(event: any) => {
-      const imageElement = document.getElementById(event.target.id)
-      const playMusic = event.target.id.replace('sound-image-', '')
-      const audioElement = document.getElementById(`sound-${playMusic}`) as HTMLAudioElement | null;
-      if (audioElement) {
-        if (audioElement.paused) {
-          audioElement.play();
-          imageElement?.classList.add('animate-spin-slow')
-          setTimeout(()=>{imageElement?.classList.remove('animate-spin-slow')},(audioElement.duration - audioElement.currentTime + 0.5)*1000)
-        } else {
-          audioElement.pause();
-          imageElement?.classList.remove('animate-spin-slow')
-        }
-      }
-    };
+
     return (
       <div
         className='
         grid 
         sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7
         gap-4
-
         '
       >
         {topTracks?.map((track: TrackDTO, index) => {
           const artists = track.artists.map(artist => artist.name)
           return (
-            <article id={`top-${index}`} key={index}
+            <article onMouseEnter={playAudio} onMouseLeave={stopMusic} id={`top-${index}`} key={index}
               className={`
               flex sm:flex-row md:flex-col
               h-32 md:h-44 hover:scale-105
@@ -75,22 +73,40 @@ export default function TopTracks() {
               shadow-gray-600 hover:shadow-green-500
               `}
             >
-              <header className='flex flex-col justify-center items-center'>
-                <h2 className='w-fit text-green-500'>
-                  <a href={track.external_urls.spotify} target='_blank'>
+              <header id={`header-card-${index}`} className='flex flex-col justify-center items-center'>
+                <h2 id={`title-card-${index}`} className='w-fit text-green-500'>
+                  <a id={`link-music-${index}`} href={track.external_urls.spotify} target='_blank'>
                     {track.name}
                   </a>
                 </h2>
-                <h3 className='text-gray-500 text-xs'>{artists.join(", ")}</h3>
+                <h3 id={`artists-${index}`} className='text-gray-500 text-xs'>
+                  <a id={`link-album-${index}`} href={track.external_urls.spotify} target='_blank'>
+                    {artists.join(", ")}
+                  </a>
+                </h3>
               </header>
-              <Image id={`sound-image-${index}`} onClick={playAudio} className='rounded-full h-auto w-auto' priority height={track.album.images[2].height} width={track.album.images[2].width} alt='' src={track.album.images[2].url} />
+              <Image id={`sound-image-${index}`} className='rounded-full h-auto w-auto' priority height={track.album.images[2].height} width={track.album.images[2].width} alt='' src={track.album.images[2].url} />
               {track.preview_url &&
                 <audio id={`sound-${index}`}>
                   <source src={track.preview_url} type="audio/mpeg" />
                   Seu navegador não suporta a reprodução de áudio.
                 </audio>
               }
-              <h5 className='text-xl font-bold text-purple-400'>{index + 1}º</h5>
+              <footer id={`footer-card-${index}`} className='flex justify-between w-full items-center px-2'>
+                <Sparkles id={`footer-card-recomendations-${index}`} className='cursor-pointer text-gray-500 w-5 hover:text-blue-400' onClick={() => { recomendations({ user, track }) }} />
+                <h5 id={`top-index-${index}`} className='text-xl font-bold text-purple-400 pointer-events-none'>{index + 1}º</h5>
+                <Plus id={`footer-card-add-${index}`} className='cursor-pointer text-gray-500 w-5 hover:text-blue-400'
+                  onClick={() => {
+                    addToQueue({ user, track })
+                    .then(()=>{
+                      toast.success('Added to queue')
+                    })
+                    .catch(() => {
+                      toast.error('Failed to add to queue')
+                    })
+                  }}
+                />
+              </footer>
             </article>
           )
         })

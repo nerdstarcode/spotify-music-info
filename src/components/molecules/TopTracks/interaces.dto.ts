@@ -9,6 +9,7 @@ export const TopTracksReponseSchema = z.object({
             external_urls: z.object({
               spotify: z.string().url(),
             }),
+            id: z.string(),
             name: z.string()
           })
         ),
@@ -27,6 +28,7 @@ export const TopTracksReponseSchema = z.object({
           external_urls: z.object({
             spotify: z.string().url(),
           }),
+          id: z.string(),
           href: z.string().url(),
           name: z.string(),
           type: z.string(),
@@ -38,6 +40,7 @@ export const TopTracksReponseSchema = z.object({
       }),
       uri: z.string(),
       name: z.string(),
+      id: z.string(),
       popularity: z.number(),
       preview_url: (z.string().url()).or(z.null())
     })
@@ -59,6 +62,7 @@ export const TrackSchema = z.object({
         external_urls: z.object({
           spotify: z.string().url(),
         }),
+        id: z.string(),
         name: z.string()
       })
     ),
@@ -78,12 +82,14 @@ export const TrackSchema = z.object({
         spotify: z.string().url(),
       }),
       href: z.string().url(),
+      id: z.string(),
       name: z.string(),
       type: z.string(),
     })
   ),
   href: z.string().url(),
   name: z.string(),
+  id: z.string(),
   popularity: z.number(),
   preview_url: (z.string().url()).or(z.null()),
   external_urls: z.object({
