@@ -6,7 +6,7 @@ export default function UserInfo() {
     const user = getUser()
     return (
       <Link href={'/authenticated'} className='flex gap-3 items-center'>
-        <Image className='rounded-full shadow-[0_0_1px_2px] shadow-green-400' width={40} height={40} src={`${user.urlImageProfile}`} alt='' />
+        <Image className='rounded-full shadow-[0_0_1px_2px] shadow-green-400' width={40} height={40} src={`${user?.urlImageProfile||null}`} alt='' />
         <h4>{user.name}</h4>
       </Link>
     )

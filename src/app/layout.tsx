@@ -26,11 +26,13 @@ export default function RootLayout({
 
         {isAuthenticated &&
           <header className='fixed w-full z-50 bg-zinc-700 h-16 flex justify-between items-center text-green-200 px-4'>
-            <UserInfo/>
-            <LogoutButton/>
+            <UserInfo />
+            <LogoutButton />
           </header>
         }
-        {children}
+        <main className="min-h-screen pt-16">
+          {children}
+        </main>
         <footer className='bg-green-900 h-20 flex justify-around items-center text-green-200'>
           <div className='flex gap-1 items-center'>
             <Copyright className='h-4 text-green-300' /> Created by <Link className='underline hover:text-green-400' href='https://github.com/nerdstarcode' target='_blank'>Sthiven Melo</Link>
@@ -39,7 +41,7 @@ export default function RootLayout({
             Version 0.0.1
           </div>
         </footer>
-        <Toaster/>
+        <Toaster />
       </body>
 
     </html>

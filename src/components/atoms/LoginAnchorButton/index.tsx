@@ -13,7 +13,7 @@ export default function LoginAnchorButton() {
         response_type: 'code',
         client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
         scope: process.env.NEXT_PUBLIC_SCOPE,
-        redirect_uri: 'http://localhost:3000/api/auth/callback',
+        redirect_uri: 'http://192.168.1.100:3000/api/auth/callback',
         state: 'loging'
       })}
       `}
