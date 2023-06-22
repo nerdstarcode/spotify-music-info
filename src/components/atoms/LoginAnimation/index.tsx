@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import sound from '@public/sound.svg'
+import sound from '../../../../public/sound.svg'
 
 export default function LoginAnimation() {
   return (
